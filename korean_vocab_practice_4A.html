@@ -1,0 +1,278 @@
+
+<h2 class="sr-only">한국어 4A 어휘 연습 — 공공시설, 교육 시설 외 11개 어휘 매칭, 빈칸 채우기, 예문 만들기</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--color-background-tertiary);color:var(--color-text-primary);min-height:100vh}
+header{background:#1B3A4B;color:white;padding:14px 20px}
+header h1{font-size:16px;font-weight:500;margin-bottom:2px}
+header p{font-size:12px;color:#94A3B8}
+.tabs{display:flex;background:#1B3A4B;padding:0 20px;border-bottom:2px solid rgba(255,255,255,0.08)}
+.tab{padding:9px 16px;font-size:13px;font-weight:500;color:#94A3B8;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;white-space:nowrap}
+.tab.on{color:#02C39A;border-color:#02C39A}
+.tab:hover:not(.on){color:white}
+.panel{display:none;padding:20px;max-width:720px;margin:0 auto}.panel.on{display:block}
+.score-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:10px 14px;background:var(--color-background-primary);border-radius:10px;border:0.5px solid var(--color-border-tertiary)}
+.score-bar span{font-size:13px;color:var(--color-text-secondary)}
+.score-bar strong{font-size:15px;font-weight:500;color:#028090}
+.reset-btn{margin-left:auto;font-size:12px;padding:5px 12px;border-radius:8px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.reset-btn:hover{background:var(--color-background-secondary)}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-col{display:flex;flex-direction:column;gap:7px}
+.match-col-label{font-size:11px;color:var(--color-text-secondary);font-weight:500;margin-bottom:3px}
+.card{padding:10px 13px;background:var(--color-background-primary);border:1.5px solid var(--color-border-tertiary);border-radius:10px;font-size:13px;cursor:pointer;text-align:center;transition:all 0.15s;color:var(--color-text-primary);min-height:46px;display:flex;align-items:center;justify-content:center;line-height:1.4}
+.card:hover{border-color:#028090;background:#E8F4F7}
+.card.selected{border:2px solid #02C39A;background:#E1F5EE;color:#085041}
+.card.correct{border:2px solid #1D9E75;background:#E1F5EE;color:#085041;cursor:default}
+.card.wrong{border:2px solid #E24B4A;background:#FCEBEB;color:#501313}
+.card.disabled{opacity:0.4;cursor:default;pointer-events:none}
+.question{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px 18px;margin-bottom:10px}
+.q-num{font-size:11px;color:var(--color-text-secondary);margin-bottom:7px;font-weight:500}
+.q-text{font-size:14px;line-height:1.7;margin-bottom:12px;color:var(--color-text-primary)}
+.blank{display:inline-block;border-bottom:2px solid var(--color-border-secondary);min-width:80px;text-align:center;color:var(--color-text-secondary)}
+.choices{display:flex;flex-wrap:wrap;gap:7px}
+.choice{padding:6px 14px;font-size:13px;border-radius:8px;border:1.5px solid var(--color-border-secondary);cursor:pointer;transition:all 0.15s;background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit}
+.choice:hover{background:#E8F4F7;border-color:#028090}
+.choice.correct{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.choice.wrong{background:#FCEBEB;border-color:#E24B4A;color:#501313}
+.choice.disabled{pointer-events:none;opacity:0.5}
+.q-feedback{font-size:13px;margin-top:9px;padding:7px 12px;border-radius:8px}
+.q-feedback.ok{background:#E1F5EE;color:#085041}
+.q-feedback.no{background:#FCEBEB;color:#501313}
+.ex-prompt-box{background:#E8F4F7;border-radius:8px;padding:11px 14px;margin-bottom:10px}
+.ex-prompt-box p{font-size:13px;line-height:1.6;color:var(--color-text-primary)}
+.vocab-hl{font-weight:500;color:#028090}
+.ex-input{width:100%;padding:9px 13px;font-size:13px;border:1.5px solid var(--color-border-secondary);border-radius:10px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit;resize:vertical;min-height:75px;margin-bottom:9px;outline:none}
+.ex-input:focus{border-color:#028090;box-shadow:0 0 0 3px #E8F4F7}
+.submit-btn{padding:8px 18px;background:#028090;color:white;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.submit-btn:hover{background:#026f7e}
+.prompt-result{margin-top:12px;background:var(--color-background-secondary);border-radius:10px;padding:13px 15px;border-left:3px solid #02C39A}
+.prompt-label{font-size:11px;font-weight:500;color:#028090;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+.prompt-label button{font-size:11px;padding:3px 10px;border-radius:6px;border:0.5px solid #028090;color:#028090;background:white;cursor:pointer}
+.prompt-label button:hover{background:#E8F4F7}
+.prompt-text{font-size:13px;color:var(--color-text-primary);line-height:1.7;white-space:pre-wrap}
+.prompt-action{margin-top:9px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.prompt-action a{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 13px;border-radius:8px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);text-decoration:none}
+.prompt-action a:hover{background:var(--color-background-secondary)}
+.prompt-action span{font-size:12px;color:var(--color-text-secondary)}
+.link-row{display:flex;gap:8px;margin-top:20px;padding-top:14px;border-top:0.5px solid var(--color-border-tertiary);flex-wrap:wrap}
+.link-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:12px;border-radius:8px;border:0.5px solid var(--color-border-secondary);text-decoration:none;color:var(--color-text-primary);background:var(--color-background-primary);transition:all 0.15s}
+.link-btn:hover{background:#E8F4F7;border-color:#028090}
+</style>
+
+<header>
+  <h1>한국어 4A 어휘 연습</h1>
+  <p>공공시설 · 편의 시설 · 삶의 질 관련 어휘 11개</p>
+</header>
+
+<div class="tabs">
+  <div class="tab on" onclick="showTab('match')">① 단어 매칭</div>
+  <div class="tab" onclick="showTab('blank')">② 빈칸 채우기</div>
+  <div class="tab" onclick="showTab('example')">③ 예문 만들기</div>
+</div>
+
+<div id="tab-match" class="panel on">
+  <div class="score-bar">
+    <span>맞힌 수:</span>
+    <strong id="match-score">0 / 11</strong>
+    <button class="reset-btn" onclick="initMatch()">↺ 다시 하기</button>
+  </div>
+  <div class="match-grid">
+    <div class="match-col">
+      <div class="match-col-label">어휘</div>
+      <div id="words-col"></div>
+    </div>
+    <div class="match-col">
+      <div class="match-col-label">뜻</div>
+      <div id="defs-col"></div>
+    </div>
+  </div>
+  <div class="link-row">
+    <a class="link-btn" href="https://quizlet.com" target="_blank">↗ Quizlet에서 더 연습하기</a>
+    <a class="link-btn" href="https://wordwall.net" target="_blank">↗ Wordwall 게임하기</a>
+  </div>
+</div>
+
+<div id="tab-blank" class="panel">
+  <div class="score-bar">
+    <span>맞힌 수:</span>
+    <strong id="blank-score">0 / 5</strong>
+    <button class="reset-btn" onclick="initBlank()">↺ 다시 하기</button>
+  </div>
+  <div id="blank-questions"></div>
+  <div class="link-row">
+    <a class="link-btn" href="https://wordwall.net" target="_blank">↗ Wordwall 빈칸 게임</a>
+    <a class="link-btn" href="https://quizlet.com" target="_blank">↗ Quizlet 학습 세트</a>
+  </div>
+</div>
+
+<div id="tab-example" class="panel">
+  <div id="ex-questions"></div>
+  <div class="link-row">
+    <a class="link-btn" href="https://claude.ai" target="_blank">↗ Claude에서 더 연습하기</a>
+  </div>
+</div>
+
+<script>
+const VOCAB=[
+  {word:'공공시설',def:'도서관, 공원처럼 모든 사람이 함께 쓰는 시설'},
+  {word:'교육 시설',def:'학교, 학원처럼 배움이 이루어지는 곳'},
+  {word:'문화 시설',def:'박물관, 공연장처럼 문화 활동을 하는 곳'},
+  {word:'복잡하다',def:'사람이나 차가 많아서 혼잡한 상태이다'},
+  {word:'편의 시설',def:'생활을 편리하게 해 주는 시설'},
+  {word:'한가하다',def:'바쁘지 않고 여유가 있다'},
+  {word:'도심을 벗어나다',def:'도시 중심에서 멀리 떠나다'},
+  {word:'삶의 질이 높다',def:'생활 수준이 좋고 만족스럽다'},
+  {word:'잘 갖추어지다',def:'필요한 것들이 충분히 마련되어 있다'},
+  {word:'접근성이 좋다',def:'교통이 편리해서 쉽게 이동할 수 있다'},
+  {word:'휴식을 취하다',def:'피로를 풀기 위해 쉬다'},
+];
+
+const BLANK_QS=[
+  {sent:'주말에는 시내가 너무 ___아/어/여서 시장 구경하기가 힘들었어요.',answer:'복잡하',choices:['복잡하','한가하','갖추어지','벗어나']},
+  {sent:'이 동네는 학교, 병원, 마트 등 ___ 잘 갖추어져 있어요.',answer:'편의 시설이',choices:['편의 시설이','공공시설이','문화 시설이','교육 시설이']},
+  {sent:'스트레스가 쌓이면 가끔 도심을 ___ 자연 속에서 쉬고 싶어요.',answer:'벗어나',choices:['벗어나','취하','높아','갖추어져']},
+  {sent:'그 지역은 지하철역이 가까워서 ___이/가 정말 좋아요.',answer:'접근성',choices:['접근성','삶의 질','편의 시설','공공시설']},
+  {sent:'주말에는 집에서 영화도 보고 충분히 ___으면/면 다음 주도 힘낼 수 있어요.',answer:'휴식을 취하',choices:['휴식을 취하','한가하','도심을 벗어나','삶의 질이 높']},
+];
+
+const EX_QS=[
+  {vocab:'삶의 질이 높다',hint:'살고 싶은 동네나 환경에 대해 써 보세요.'},
+  {vocab:'접근성이 좋다 / 잘 갖추어지다',hint:'교통이나 시설에 대한 경험을 써 보세요.'},
+  {vocab:'도심을 벗어나다 / 휴식을 취하다',hint:'여가나 휴식에 대한 이야기를 써 보세요.'},
+];
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  const idx={match:0,blank:1,example:2}[name];
+  document.querySelectorAll('.tab')[idx].classList.add('on');
+  document.getElementById('tab-'+name).classList.add('on');
+}
+
+let selWord=null,selDef=null,matchCorrect=0;
+function initMatch(){
+  matchCorrect=0;selWord=null;selDef=null;
+  document.getElementById('match-score').textContent='0 / 11';
+  const wc=document.getElementById('words-col');
+  const dc=document.getElementById('defs-col');
+  wc.innerHTML='';dc.innerHTML='';
+  [...VOCAB].sort(()=>Math.random()-0.5).forEach(v=>{
+    const d=document.createElement('div');
+    d.className='card';d.textContent=v.word;d.dataset.word=v.word;
+    d.onclick=()=>pickWord(d);wc.appendChild(d);
+  });
+  [...VOCAB].sort(()=>Math.random()-0.5).forEach(v=>{
+    const d=document.createElement('div');
+    d.className='card';d.textContent=v.def;d.dataset.word=v.word;
+    d.onclick=()=>pickDef(d);dc.appendChild(d);
+  });
+}
+function pickWord(el){
+  if(el.classList.contains('correct')||el.classList.contains('disabled'))return;
+  document.querySelectorAll('#words-col .card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');selWord=el;
+  if(selDef)checkMatch();
+}
+function pickDef(el){
+  if(el.classList.contains('correct')||el.classList.contains('disabled'))return;
+  document.querySelectorAll('#defs-col .card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');selDef=el;
+  if(selWord)checkMatch();
+}
+function checkMatch(){
+  const ok=selWord.dataset.word===selDef.dataset.word;
+  if(ok){
+    [selWord,selDef].forEach(c=>{c.classList.remove('selected');c.classList.add('correct','disabled');});
+    matchCorrect++;
+    document.getElementById('match-score').textContent=matchCorrect+' / 11';
+  } else {
+    [selWord,selDef].forEach(c=>c.classList.add('wrong'));
+    setTimeout(()=>{[selWord,selDef].forEach(c=>c.classList.remove('wrong','selected'));selWord=null;selDef=null;},700);
+    return;
+  }
+  selWord=null;selDef=null;
+}
+
+let blankCorrect=0;
+function initBlank(){
+  blankCorrect=0;
+  document.getElementById('blank-score').textContent='0 / 5';
+  const cont=document.getElementById('blank-questions');
+  cont.innerHTML='';
+  BLANK_QS.forEach((q,i)=>{
+    const shuffled=[...q.choices].sort(()=>Math.random()-0.5);
+    const div=document.createElement('div');
+    div.className='question';
+    div.innerHTML=`<div class="q-num">${i+1}번</div>
+<div class="q-text">${q.sent.replace('___',`<span class="blank">　　　　</span>`)}</div>
+<div class="choices">${shuffled.map(c=>`<button class="choice" data-ans="${c}" data-correct="${q.answer}" onclick="checkBlank(this,${i})">${c}</button>`).join('')}</div>
+<div class="q-feedback" id="fb-${i}" style="display:none"></div>`;
+    cont.appendChild(div);
+  });
+}
+function checkBlank(btn,idx){
+  const correct=btn.dataset.ans===btn.dataset.correct;
+  const fb=document.getElementById('fb-'+idx);
+  btn.parentElement.querySelectorAll('.choice').forEach(b=>b.classList.add('disabled'));
+  if(correct){
+    btn.classList.add('correct');
+    fb.className='q-feedback ok';fb.textContent='정답이에요!';fb.style.display='block';
+    blankCorrect++;
+    document.getElementById('blank-score').textContent=blankCorrect+' / 5';
+  } else {
+    btn.classList.add('wrong');
+    const rb=btn.parentElement.querySelector(`[data-ans="${btn.dataset.correct}"]`);
+    if(rb)rb.classList.add('correct');
+    fb.className='q-feedback no';fb.textContent='아쉬워요. 정답은 "'+btn.dataset.correct+'"예요.';fb.style.display='block';
+  }
+}
+
+function initExample(){
+  const cont=document.getElementById('ex-questions');
+  cont.innerHTML='';
+  EX_QS.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='question';
+    div.style.marginBottom='14px';
+    div.innerHTML=`<div class="q-num">${i+1}번</div>
+<div class="ex-prompt-box"><p><span class="vocab-hl">「${q.vocab}」</span>를 사용해서 문장을 만들어 보세요.<br><span style="font-size:12px;color:var(--color-text-secondary)">${q.hint}</span></p></div>
+<textarea class="ex-input" id="ex-input-${i}" placeholder="여기에 문장을 써 보세요..."></textarea>
+<button class="submit-btn" onclick="makePrompt(${i},'${q.vocab}')">피드백 프롬프트 만들기 →</button>
+<div id="ex-result-${i}"></div>`;
+    cont.appendChild(div);
+  });
+}
+
+function makePrompt(idx,vocab){
+  const input=document.getElementById('ex-input-'+idx);
+  const resultDiv=document.getElementById('ex-result-'+idx);
+  const text=input.value.trim();
+  if(!text){alert('문장을 먼저 써 주세요!');return;}
+  const prompt=`나는 한국어 4급 학습자예요. 「${vocab}」를 사용해서 이 문장을 썼어요:\n\n"${text}"\n\n아래 세 가지를 피드백해 주세요:\n1. 어휘 사용이 자연스러운지\n2. 문법이나 표현에서 고칠 점\n3. 격려 한마디\n\n쉬운 한국어로 짧게 답해주세요.`;
+  resultDiv.innerHTML=`<div class="prompt-result">
+<div class="prompt-label">
+  <span>Claude에 붙여넣을 프롬프트</span>
+  <button onclick="copyText('pt-${idx}')">복사하기</button>
+</div>
+<div class="prompt-text" id="pt-${idx}">${prompt}</div>
+<div class="prompt-action">
+  <a href="https://claude.ai" target="_blank">↗ Claude 열기</a>
+  <span>← 열고 나서 위 프롬프트를 붙여넣으세요</span>
+</div>
+</div>`;
+}
+
+function copyText(id){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    const btn=el.parentElement.querySelector('button');
+    const orig=btn.textContent;
+    btn.textContent='✓ 복사됨';
+    setTimeout(()=>btn.textContent=orig,1500);
+  });
+}
+
+initMatch();
+initBlank();
+initExample();
+</script>
